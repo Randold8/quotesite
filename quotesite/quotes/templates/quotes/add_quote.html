@@ -1,0 +1,21 @@
+{% extends 'quotes/base.html' %}
+{% block content %}
+  <h2 class="fade-up">Добавить цитату</h2>
+  {% if not has_sources %}
+    <div class="messages fade-up">
+      <div class="alert alert-warning">
+        Сначала создайте источник: <a href="{% url 'quotes:add_source' %}">Добавить источник</a>
+      </div>
+    </div>
+  {% endif %}
+  <div class="card fade-up">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="toolbar">
+        <button class="btn btn-primary" type="submit" {% if not has_sources %}disabled{% endif %}>Сохранить</button>
+        <a class="btn" href="{% url 'quotes:random' %}">Отмена</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!-- templates/quotes/random.html -->
+{% extends 'quotes/base.html' %}
+{% block content %}
+  <h2 class="headings">Случайная цитата</h2>
+  <div class="spacer"></div>
+
+  {% if quote %}
+    <div class="stat-chip">👁 Показов этой цитаты: {{ quote.views }}</div>
+    <div class="spacer"></div>
+
+    <div class="card quote-card quote-card--with-cover fade-up">
+      {% if quote.source.image_url %}
+        <div class="cover">
+          <img src="{{ quote.source.image_url }}"
+               alt="Обложка: {{ quote.source.name }}"
+               loading="lazy"
+               onerror="this.closest('.cover').style.display='none'">
+        </div>
+      {% endif %}
+
+      <div class="quote-body">
+        <blockquote class="quote-text">“{{ quote.text }}”</blockquote>
+
+        <div class="meta">
+          <span class="badge">Источник: {{ quote.source.get_type_display }} — {{ quote.source.name }}</span>
+          <span class="badge warn">Вес: {{ quote.weight }}</span>
+          <span class="badge success">❤️ {{ quote.likes }}</span>
+          <span class="badge danger">💔 {{ quote.dislikes }}</span>
+        </div>
+
+        <div class="vote toolbar">
+          <form method="post" action="{% url 'quotes:vote' quote.pk 'like' %}">
+            {% csrf_token %}
+            <button class="btn btn-like" type="submit" aria-label="Поставить лайк">❤️ Лайк</button>
+          </form>
+          <form method="post" action="{% url 'quotes:vote' quote.pk 'dislike' %}">
+            {% csrf_token %}
+            <button class="btn btn-dislike" type="submit" aria-label="Поставить дизлайк">💔 Дизлайк</button>
+          </form>
+          <a class="btn btn-outline" href="{% url 'quotes:random' %}">Показать другую ↻</a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card fade-up">Пока нет ни одной цитаты. Добавьте первую!</div>
+  {% endif %}
+{% endblock %}

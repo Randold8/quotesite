@@ -1,0 +1,44 @@
+<!-- templates/quotes/base.html -->
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Цитаты</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="stylesheet" href="{% static 'quotes/styles.css' %}">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="{% url 'quotes:random' %}">Фонд Цитат</a>
+    <nav class="nav">
+      <a class="nav-link" href="{% url 'quotes:random' %}">Случайная</a>
+      <a class="nav-link" href="{% url 'quotes:add_quote' %}">Добавить цитату</a>
+      <a class="nav-link" href="{% url 'quotes:add_source' %}">Добавить источник</a>
+      <a class="nav-link" href="{% url 'quotes:top' %}">Топ-10</a>
+      <a class="nav-link" href="/admin/">Админка</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container main-container">
+  {% if messages %}
+    <div class="messages">
+      {% for m in messages %}
+        <div class="alert alert-{{ m.tags|default:'info' }}">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="muted">© {{ now|date:"Y" }} Цитаты. Сделано на Django.</div>
+  </div>
+</footer>
+</body>
+</html>

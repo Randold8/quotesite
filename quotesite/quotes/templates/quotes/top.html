@@ -1,0 +1,89 @@
+{% extends 'quotes/base.html' %}
+{% block content %}
+  <h2 class="headings">Топ цитат</h2>
+  <div class="spacer"></div>
+
+  <!-- Панель фильтров и сортировки -->
+  <div class="card fade-up">
+    <form class="row" method="get">
+      <div style="flex:1 1 260px;">
+        <label for="q">Текст цитаты</label>
+        <input class="form-control" type="text" id="q" name="q"
+               placeholder="Например: свобода"
+               value="{{ params.q }}">
+      </div>
+
+      <div style="flex:1 1 220px;">
+        <label for="source">Источник</label>
+        <input class="form-control" list="sources" type="text" id="source" name="source"
+               placeholder="Название фильма/книги"
+               value="{{ params.source }}">
+        <datalist id="sources">
+          {% for s in sources %}
+            <option value="{{ s.name }}"></option>
+          {% endfor %}
+        </datalist>
+      </div>
+
+      <div style="flex:0 0 160px;">
+        <label for="sort">Сортировка</label>
+        <select class="form-select" id="sort" name="sort">
+          <option value="likes" {% if params.sort == 'likes' %}selected{% endif %}>По лайкам</option>
+          <option value="views" {% if params.sort == 'views' %}selected{% endif %}>По просмотрам</option>
+        </select>
+      </div>
+
+      <div style="flex:0 0 160px;">
+        <label for="order">Порядок</label>
+        <select class="form-select" id="order" name="order">
+          <option value="desc" {% if params.order == 'desc' %}selected{% endif %}>По убыванию</option>
+          <option value="asc"  {% if params.order == 'asc'  %}selected{% endif %}>По возрастанию</option>
+        </select>
+      </div>
+
+      <div style="flex:0 0 140px;">
+        <label for="limit">Количество</label>
+        <input class="form-control" type="number" id="limit" name="limit"
+               min="1" max="200" step="1" value="{{ params.limit }}">
+      </div>
+
+      <div style="flex:0 0 200px; align-self: flex-end;">
+        <button class="btn btn-primary" type="submit">Показать</button>
+        <a class="btn btn-ghost" href="{% url 'quotes:top' %}">Сброс</a>
+      </div>
+    </form>
+  </div>
+
+  <div class="spacer"></div>
+  <div class="muted">Показано {{ params.current_count }} из {{ params.total_count }} найденных</div>
+  <div class="spacer"></div>
+
+  {% if quotes %}
+    <div class="grid grid--1col">
+      {% for q in quotes %}
+        <div class="card quote-card quote-card--with-cover fade-up">
+          {% if q.source.image_url %}
+            <div class="cover cover--sm">
+              <img src="{{ q.source.image_url }}"
+                   alt="Обложка: {{ q.source.name }}"
+                   loading="lazy"
+                   onerror="this.closest('.cover').style.display='none'">
+            </div>
+          {% endif %}
+          <div class="quote-body">
+            <blockquote class="quote-text">“{{ q.text }}”</blockquote>
+            <div class="meta">
+              <span class="badge">Источник: {{ q.source.get_type_display }} — {{ q.source.name }}</span>
+              <span class="badge warn">Вес: {{ q.weight }}</span>
+              <span class="badge success">❤️ {{ q.likes }}</span>
+              <span class="badge danger">💔 {{ q.dislikes }}</span>
+              <span class="badge">👁 {{ q.views }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card fade-up">Ничего не найдено. Измените фильтры и попробуйте ещё раз.</div>
+  {% endif %}
+{% endblock %}

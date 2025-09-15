@@ -1,0 +1,31 @@
+from django import forms
+from .models import Quote, Source
+
+class SourceForm(forms.ModelForm):
+    class Meta:
+        model = Source
+        fields = ['name', 'type', 'image_url']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название источника'}),
+            'type': forms.Select(attrs={'class': 'form-select'}),
+            'image_url': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'https://example.com/poster.jpg'
+            }),
+        }
+
+class QuoteForm(forms.ModelForm):
+    class Meta:
+        model = Quote
+        fields = ['text', 'source', 'weight']
+        widgets = {
+            'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Текст цитаты'}),
+            'source': forms.Select(attrs={'class': 'form-select'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
+        }
+
+    def clean_text(self):
+        text = self.cleaned_data.get('text', '').strip()
+        if not text:
+            raise forms.ValidationError('Текст цитаты обязателен.')
+        return text

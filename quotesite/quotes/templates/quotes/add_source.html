@@ -1,0 +1,15 @@
+{% extends 'quotes/base.html' %}
+{% block content %}
+  <h2 class="fade-up">Добавить источник</h2>
+  <div class="spacer"></div>
+  <div class="card fade-up">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="toolbar">
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+        <a class="btn" href="{% url 'quotes:random' %}">Отмена</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
